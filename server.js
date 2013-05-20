@@ -1,9 +1,5 @@
-var express = require('express');
+var mongoose = require('mongoose');
+var app = require('./app');
 
-var app = express();
-
-app.get('/', function (req, res) {
-    res.json({ ok: true });
-});
-
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/pushcart');
 app.listen(process.env.PORT || 3000);
