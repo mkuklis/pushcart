@@ -1,6 +1,7 @@
 {
     "name": "pushcart",
     "version": "0.0.0",
+    "main": "./app/index.js",
 
     "scripts": {
         "test": "./node_modules/.bin/mocha"
