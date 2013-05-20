@@ -9,3 +9,10 @@ app.post('/', function (req, res, next) {
         res.json(client, 201);
     });
 });
+
+app.get('/', function (req, res, next) {
+    Client.find(function (err, clients) {
+        if (err) return next(err);
+        res.json(clients);
+    });
+});
