@@ -25,3 +25,10 @@ app.post('/', function (req, res, next) {
         res.json(message, 201);
     });
 });
+
+app.get('/', function (req, res, next) {
+    Message.find(function (err, messages) {
+        if (err) return next(err);
+        res.json(messages);
+    });
+});
