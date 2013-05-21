@@ -18,7 +18,13 @@ app.post('/', auth.app, function (req, res, next) {
 });
 
 app.get('/', auth.token, function (req, res, next) {
-    Message.find(function (err, messages) {
+    var query = Message.find({});
+
+    if (req.query.since) {
+        query = query.where('_id').gt(req.query.since);
+    }
+
+    query.exec(function (err, messages) {
         if (err) return next(err);
         res.json(messages);
     });

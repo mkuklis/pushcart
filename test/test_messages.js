@@ -53,10 +53,12 @@ describe('Messages', function () {
 
     describe('GET /messages', function () {
         beforeEach(function (done) {
-            Message.create([
-                { app: this.app },
-                { app: this.app }
-            ], done);
+            this.messages = [
+                new Message({ app: this.app }),
+                new Message({ app: this.app })
+            ];
+
+            Message.create(this.messages, done);
         });
 
         it('returns all messages', function (done) {
@@ -70,6 +72,24 @@ describe('Messages', function () {
                 if (err) return done(err);
 
                 assert.equal(res.body.length, 2);
+                done();
+            });
+        });
+
+        it('returns messages created since a given id', function (done) {
+            var self = this;
+
+            var req = request(app)
+                .get('/messages?since=' + this.messages[0]._id)
+                .set('X-Auth-Token', 'secret')
+                .expect(200)
+                .expect('Content-Type', /json/);
+
+            req.end(function (err, res) {
+                if (err) return done(err);
+
+                assert.equal(res.body.length, 1);
+                assert.equal(res.body[0]._id, self.messages[1]._id);
                 done();
             });
         });
