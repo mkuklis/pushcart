@@ -8,6 +8,7 @@ describe('Applications', function () {
         it('creates new application', function (done) {
             var req = request(app)
                 .post('/applications')
+                .set('X-Auth-Token', 'secret')
                 .send({ name: 'Foo' })
                 .expect(201)
                 .expect('Content-Type', /json/);
@@ -32,6 +33,7 @@ describe('Applications', function () {
         it('returns all applications', function (done) {
             var req = request(app)
                 .get('/applications')
+                .set('X-Auth-Token', 'secret')
                 .expect(200)
                 .expect('Content-Type', /json/);
 

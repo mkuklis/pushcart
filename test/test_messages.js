@@ -41,7 +41,7 @@ describe('Messages', function () {
         it('returns all messages', function (done) {
             var req = request(app)
                 .get('/messages')
-                .set('X-App-Token', this.app.token)
+                .set('X-Auth-Token', 'secret')
                 .expect(200)
                 .expect('Content-Type', /json/);
 
