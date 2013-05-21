@@ -7,4 +7,3 @@ app.use(express.bodyParser());
 
 app.use('/applications', require('./controllers/applications'));
 app.use('/messages', require('./controllers/messages'));
-app.use('/events', require('./controllers/events'));

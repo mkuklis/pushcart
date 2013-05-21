@@ -12,7 +12,7 @@ app.post('/', auth.app, function (req, res, next) {
     message.save(function (err) {
         if (err) return next(err);
 
-        events.emit('message', message);
+        events.publish(message);
         res.json(message, 201);
     });
 });
