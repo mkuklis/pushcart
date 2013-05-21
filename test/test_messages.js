@@ -31,8 +31,12 @@ describe('Messages', function () {
         it('publishes message event', function (done) {
             var server = app.listen();
             var url = format('http://localhost:%d/events', server.address().port);
-            var message = {};
-            var es = new EventSource(url);
+            
+            var es = new EventSource(url, {
+                headers: {
+                    'X-Auth-Token': 'secret'
+                }
+            });
 
             es.onerror = function () {
                 done('onerror called');
