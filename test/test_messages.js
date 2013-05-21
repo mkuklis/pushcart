@@ -1,13 +1,13 @@
 var assert = require('assert');
 var request = require('supertest');
 var app = require('../app');
-var Client = require('../app/models/client');
+var Application = require('../app/models/application');
 var Message = require('../app/models/message');
 
 describe('Messages', function () {
     beforeEach(function (done) {
-        this.client = new Client({ name: 'Foo' });
-        this.client.save(done);
+        this.app = new Application({ name: 'Foo' });
+        this.app.save(done);
     });
 
     describe('POST /messages', function () {
@@ -16,7 +16,7 @@ describe('Messages', function () {
 
             var req = request(app)
                 .post('/messages')
-                .set('X-Client-Token', this.client.token)
+                .set('X-App-Token', this.app.token)
                 .expect(201)
                 .expect('Content-Type', /json/);
 
@@ -33,15 +33,15 @@ describe('Messages', function () {
     describe('GET /messages', function () {
         beforeEach(function (done) {
             Message.create([
-                { client: this.client },
-                { client: this.client }
+                { app: this.app },
+                { app: this.app }
             ], done);
         });
 
         it('returns all messages', function (done) {
             var req = request(app)
                 .get('/messages')
-                .set('X-Client-Token', this.client.token)
+                .set('X-App-Token', this.app.token)
                 .expect(200)
                 .expect('Content-Type', /json/);
 

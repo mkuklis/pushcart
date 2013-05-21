@@ -1,12 +1,12 @@
 var mongoose = require('mongoose');
 var uuid = require('node-uuid');
 
-var Client = new mongoose.Schema({
+var Application = new mongoose.Schema({
     name: { type: String, required: true },
     token: { type: String }
 });
 
-Client.pre('save', function (next) {
+Application.pre('save', function (next) {
     if (this.isNew) {
         this.token = uuid.v4();
     }
@@ -14,6 +14,6 @@ Client.pre('save', function (next) {
     next();
 });
 
-Client.set('versionKey', false);
+Application.set('versionKey', false);
 
-module.exports = mongoose.model('Client', Client);
+module.exports = mongoose.model('Application', Application);

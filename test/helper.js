@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var request = require('supertest');
 var app = require('../app');
-var Client = require('../app/models/client');
+var Application = require('../app/models/application');
 var Message = require('../app/models/message');
 
 before(function () {
@@ -9,7 +9,7 @@ before(function () {
 });
 
 beforeEach(function (done) {
-    Client.remove(done);
+    Application.remove(done);
 });
 
 beforeEach(function (done) {

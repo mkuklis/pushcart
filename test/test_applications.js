@@ -1,13 +1,13 @@
 var assert = require('assert');
 var request = require('supertest');
 var app = require('../app');
-var Client = require('../app/models/client');
+var Application = require('../app/models/application');
 
-describe('Clients', function () {
-    describe('POST /clients', function () {
-        it('creates new client', function (done) {
+describe('Applications', function () {
+    describe('POST /applications', function () {
+        it('creates new application', function (done) {
             var req = request(app)
-                .post('/clients')
+                .post('/applications')
                 .send({ name: 'Foo' })
                 .expect(201)
                 .expect('Content-Type', /json/);
@@ -24,14 +24,14 @@ describe('Clients', function () {
         });
     });
 
-    describe('GET /clients', function () {
+    describe('GET /applications', function () {
         beforeEach(function (done) {
-            Client.create([{ name: 'Foo' }, { name: 'Bar' }], done);
+            Application.create([{ name: 'Foo' }, { name: 'Bar' }], done);
         });
 
-        it('returns all clients', function (done) {
+        it('returns all applications', function (done) {
             var req = request(app)
-                .get('/clients')
+                .get('/applications')
                 .expect(200)
                 .expect('Content-Type', /json/);
 
