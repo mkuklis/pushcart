@@ -124,17 +124,6 @@ clients.action(function () {
     });
 });
 
-// Listen
-// ---------------
-
-var listen = program.command('listen');
-listen.description('listen for messages');
-listen.action(function () {
-    subscribe(function (message) {
-        console.log(message);
-    });
-});
-
 // Main
 // ---------------
 
@@ -178,9 +167,4 @@ function api(method, path, body, callback) {
 
         callback(null, body);
     });
-}
-
-function subscribe(callback) {
-    pushcart.events.connect(process.env.REDIS_URI || 'redis://localhost:6379');
-    pushcart.events.subscribe(callback);
 }
