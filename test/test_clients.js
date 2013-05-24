@@ -25,6 +25,50 @@ describe('Clients', function () {
         });
     });
 
+    describe('GET /clients', function () {
+        beforeEach(function (done) {
+            this.clients = [
+                new Client({ type: 'foo' }),
+                new Client({ type: 'bar' })
+            ];
+
+            Client.create(this.clients, done);
+        });
+
+        it('returns all clients', function (done) {
+            var req = request(app)
+                .get('/clients')
+                .set('X-Auth-Token', 'secret')
+                .expect(200)
+                .expect('Content-Type', /json/);
+
+            req.end(function (err, res) {
+                if (err) return done(err);
+
+                assert.equal(res.body.length, 2);
+                done();
+            });
+        });
+
+        it('returns clients of a given type', function (done) {
+            var self = this;
+
+            var req = request(app)
+                .get('/clients?type=bar')
+                .set('X-Auth-Token', 'secret')
+                .expect(200)
+                .expect('Content-Type', /json/);
+
+            req.end(function (err, res) {
+                if (err) return done(err);
+
+                assert.equal(res.body.length, 1);
+                assert.equal(res.body[0]._id, self.clients[1]._id);
+                done();
+            });
+        });
+    });
+
     describe('DELETE /clients/:id', function () {
         beforeEach(function (done) {
             this.client = new Client({ type: 'foo' });
