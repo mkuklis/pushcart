@@ -97,7 +97,7 @@ apps.action(function () {
 // ---------------
 
 var rmclient = program.command('rmclient <id>');
-rmclient.description('remove rmclient with the given id');
+rmclient.description('remove client with the given id');
 rmclient.action(function (id) {
     api('DELETE', '/clients/' + id, {}, function (err) {
         if (err) throw err;
