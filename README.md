@@ -31,7 +31,7 @@ Message producers are referred to as "applications" and must be registered with 
     id: 519f9471fb85da32f7000001
     token: eac3538e-07d3-485f-82a5-6e0e78866cc8
 
-Applications can then create messages by POST-ing to `/messages`
+Applications can then create messages by POST-ing to `/messages` and providing the app token:
 
     POST /messages HTTP/1.1
     Host: mypushcartserver.com
@@ -59,9 +59,11 @@ Example response:
         "token": "13c5287d-4801-41ec-98d6-8ef986e3adfe"
     }
 
+Clients should store the client token in order to consume messages.
+
 # Messages
 
-Messages can be consumed by GET-ing `/messages`:
+Messages can be consumed in bulk by GET-ing `/messages`:
 
     GET /messages HTTP/1.1
     Host: mypushcartserver.com
@@ -81,7 +83,7 @@ Example response:
         ...
     ]
 
-Clients can also fetch messages created since a particular `_id` by specifying a `since` id in the query string:
+Clients can also fetch only those messages created after a particular `_id` by sepcifying a `since` query string parameter:
 
     GET /messages?since=519f713c22744d85d8000001 HTTP/1.1
     Host: mypushcartserver.com
@@ -89,10 +91,10 @@ Clients can also fetch messages created since a particular `_id` by specifying a
 
 # Pubsub
 
-Messages are also published to Redis when created.  Other applications can listen for these messages by subscribing to the `pushcart` channel:
+Messages are published to Redis when created.  Other applications can listen for these messages by subscribing to the `pushcart:messages` channel:
 
     $ redis-cli
-    $ subscribe pushcart
+    $ subscribe pushcart:messages
 
 # Test
 
