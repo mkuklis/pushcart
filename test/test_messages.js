@@ -39,12 +39,20 @@ describe('Messages', function () {
             var req = request(pushcart.app)
                 .post('/messages')
                 .set('X-App-Token', this.app.token)
-                .expect('Content-Type', /json/);
+                .expect('Content-Type', /json/)
+                .send({ foo: 'bar' });
 
             req.end(function (err, res) {
                 if (err) return done(err);
 
                 assert.ok(self.publish.calledOnce);
+                
+                var msg = self.publish.getCall(0).args[0];
+                assert.ok(msg._id);
+                assert.equal(msg.foo, 'bar');
+                assert.ok(msg.app._id);
+                assert.ok(msg.app.name);
+
                 done();
             });
         });
@@ -76,6 +84,8 @@ describe('Messages', function () {
                 if (err) return done(err);
 
                 assert.equal(res.body.length, 2);
+                assert.ok(res.body[0].app._id);
+                assert.ok(res.body[0].app.name);
                 done();
             });
         });
