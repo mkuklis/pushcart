@@ -26,6 +26,8 @@ Message producers are referred to as "applications" and must be registered with 
 
     $ pushcart addapp
     Name: My App
+
+    OK
     id: 519f9471fb85da32f7000001
     token: eac3538e-07d3-485f-82a5-6e0e78866cc8
 

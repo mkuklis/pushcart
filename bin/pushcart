@@ -56,7 +56,7 @@ addapp.action(function () {
         api('POST', '/applications', { name: name }, function (err, app) {
             if (err) throw err;
 
-            console.log(f('id: %s\ntoken: %s', app._id, app.token))
+            console.log(f('\nOK\nid: %s\ntoken: %s', app._id, app.token))
             process.exit(0);
         });
     });
