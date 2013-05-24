@@ -1,15 +1,14 @@
-pushcart
-========
+# pushcart
 
 Pushcart is a small HTTP-service for distributing messages from one or more producer applications to various client consumers.
 
-# Install
+## Install
 
 In addition to installing MongoDB and Redis, install Pushcart from NPM:
 
     $ npm install -g pushcart
 
-# Server
+## Server
 
     $ pushcart server
 
@@ -20,7 +19,7 @@ The Pushcart server is configured via a number of environment variables:
 * `REDIS_URI`
 * `AUTH_TOKEN`
 
-# Applications
+## Applications
 
 Message producers are referred to as "applications" and must be registered with Pushcart:
 
@@ -40,7 +39,7 @@ Applications can then create messages by POST-ing to `/messages` and providing t
 
     { "hello": "world" }
 
-# Clients
+## Clients
 
 Message consumers are referred to as "clients" and must also be registered with Pushcart.  The client program can register itself by POST-ing to `/clients`:
 
@@ -61,7 +60,7 @@ Example response:
 
 Clients should store the client token in order to consume messages.
 
-# Messages
+## Messages
 
 Messages can be consumed in bulk by GET-ing `/messages`:
 
@@ -89,13 +88,13 @@ Clients can also fetch only those messages created after a particular `_id` by s
     Host: mypushcartserver.com
     X-Client-Token: 13c5287d-4801-41ec-98d6-8ef986e3adfe
 
-# Pubsub
+## Pubsub
 
 Messages are published to Redis when created.  Other applications can listen for these messages by subscribing to the `pushcart:messages` channel:
 
     $ redis-cli
     $ subscribe pushcart:messages
 
-# Test
+## Test
 
     $ npm test
