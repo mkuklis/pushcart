@@ -22,3 +22,15 @@ app.get('/', function (req, res, next) {
         res.json(clients);
     });
 });
+
+app.del('/:id', function (req, res, next) {
+    Application.findById(req.params.id, function (err, app) {
+        if (err) return next(err);
+        if (!app) return res.json({ error: 'Not found' }, 404);
+
+        app.remove(function (err) {
+            if (err) return callback(err);
+            res.send(204);
+        });
+    });
+});

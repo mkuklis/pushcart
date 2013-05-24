@@ -46,4 +46,20 @@ describe('Applications', function () {
             });
         });
     });
+
+    describe('DELETE /applications/:id', function () {
+        beforeEach(function (done) {
+            this.app = new Application({ name: 'Foo' });
+            this.app.save(done);
+        });
+
+        it('deletes application with given id', function (done) {
+            var req = request(app)
+                .del('/applications/' + this.app._id)
+                .set('X-Auth-Token', 'secret')
+                .expect(204);
+
+            req.end(done);
+        });
+    });
 });
