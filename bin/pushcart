@@ -93,6 +93,37 @@ apps.action(function () {
     });
 });
 
+// Remove Client
+// ---------------
+
+var rmclient = program.command('rmclient <id>');
+rmclient.description('remove rmclient with the given id');
+rmclient.action(function (id) {
+    api('DELETE', '/clients/' + id, {}, function (err) {
+        if (err) throw err;
+
+        console.log('OK');
+        process.exit(0);
+    });
+});
+
+// List Clients
+// ---------------
+
+var clients = program.command('clients');
+clients.description('list all clients');
+clients.action(function () {
+    api('GET', '/clients', undefined, function (err, clients) {
+        if (err) throw err;
+
+        clients.forEach(function (client) {
+            console.log(f('%s\n\ttype: %s\n\ttoken: %s\n\tinfo: %s', client._id, client.type, client.token, JSON.stringify(client.info)))
+        });
+
+        process.exit(0);
+    });
+});
+
 // Listen
 // ---------------
 
