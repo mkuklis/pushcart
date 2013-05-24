@@ -5,6 +5,7 @@ var format = require('util').format;
 var app = require('../app');
 var events = require('../app/lib/events');
 var Application = require('../app/models/application');
+var Client = require('../app/models/client');
 var Message = require('../app/models/message');
 
 describe('Messages', function () {
@@ -53,6 +54,11 @@ describe('Messages', function () {
 
     describe('GET /messages', function () {
         beforeEach(function (done) {
+            this.client = new Client({ type: 'foo' });
+            this.client.save(done);
+        });
+
+        beforeEach(function (done) {
             this.messages = [
                 new Message({ app: this.app }),
                 new Message({ app: this.app })
@@ -64,7 +70,7 @@ describe('Messages', function () {
         it('returns all messages', function (done) {
             var req = request(app)
                 .get('/messages')
-                .set('X-Auth-Token', 'secret')
+                .set('X-Client-Token', this.client.token)
                 .expect(200)
                 .expect('Content-Type', /json/);
 
@@ -81,7 +87,7 @@ describe('Messages', function () {
 
             var req = request(app)
                 .get('/messages?since=' + this.messages[0]._id)
-                .set('X-Auth-Token', 'secret')
+                .set('X-Client-Token', this.client.token)
                 .expect(200)
                 .expect('Content-Type', /json/);
 

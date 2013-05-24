@@ -11,7 +11,7 @@ exports.connect = function (uri) {
         var pass = parts.auth.split(':')[1];
         this.client.auth(pass);
     }
-}
+};
 
 exports.publish = function (message) {
     this.client.publish(this.channel, JSON.stringify(message));

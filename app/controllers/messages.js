@@ -17,7 +17,7 @@ app.post('/', auth.app, function (req, res, next) {
     });
 });
 
-app.get('/', auth.token, function (req, res, next) {
+app.get('/', auth.client, function (req, res, next) {
     var query = Message.find({});
 
     if (req.query.since) {

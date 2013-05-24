@@ -1,5 +1,5 @@
 var express = require('express');
-var Application = require('../models/application');
+var Client = require('../models/client');
 
 var app = module.exports = express();
 
@@ -10,25 +10,18 @@ app.use(function (req, res, next) {
 });
 
 app.post('/', function (req, res, next) {
-    Application.create(req.body, function (err, app) {
+    Client.create(req.body, function (err, client) {
         if (err) return next(err);
-        res.json(app, 201);
-    });
-});
-
-app.get('/', function (req, res, next) {
-    Application.find(function (err, clients) {
-        if (err) return next(err);
-        res.json(clients);
+        res.json(client, 201);
     });
 });
 
 app.del('/:id', function (req, res, next) {
-    Application.findById(req.params.id, function (err, app) {
+    Client.findById(req.params.id, function (err, client) {
         if (err) return next(err);
-        if (!app) return res.json({ error: 'Not found' }, 404);
+        if (!client) return res.json({ error: 'Not found' }, 404);
 
-        app.remove(function (err) {
+        client.remove(function (err) {
             if (err) return callback(err);
             res.send(204);
         });

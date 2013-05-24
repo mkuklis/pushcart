@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var request = require('supertest');
 var app = require('../app');
 var Application = require('../app/models/application');
+var Client = require('../app/models/client');
 var Message = require('../app/models/message');
 
 process.env.AUTH_TOKEN = 'secret';
@@ -12,6 +13,10 @@ before(function () {
 
 beforeEach(function (done) {
     Application.remove(done);
+});
+
+beforeEach(function (done) {
+    Client.remove(done);
 });
 
 beforeEach(function (done) {
