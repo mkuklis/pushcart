@@ -1,13 +1,10 @@
 var express = require('express');
+var auth = require('../lib/auth');
 var Application = require('../models/application');
 
 var app = module.exports = express();
 
-app.use(function (req, res, next) {
-    var token = req.header('X-Auth-Token');
-    if (token !== process.env.AUTH_TOKEN) return res.json({ error: 'Unauthorized' }, 401);
-    next();
-});
+app.use(auth.token);
 
 app.post('/', function (req, res, next) {
     Application.create(req.body, function (err, app) {
