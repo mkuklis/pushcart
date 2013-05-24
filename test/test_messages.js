@@ -25,12 +25,14 @@ describe('Messages', function () {
                 .post('/messages')
                 .set('X-App-Token', this.app.token)
                 .expect(201)
-                .expect('Content-Type', /json/);
+                .expect('Content-Type', /json/)
+                .send({ foo: 'bar' });
 
             req.end(function (err, res) {
                 if (err) return done(err);
 
                 assert.ok(res.body._id);
+                assert.equal(res.body.foo, 'bar');
                 done();
             });
         });

@@ -6,7 +6,7 @@ var Message = require('../models/message');
 var app = module.exports = express();
 
 app.post('/', auth.app, function (req, res, next) {
-    var message = new Message(req.body);
+    var message = new Message({ data: req.body });
     message.app = req.app;
 
     message.save(function (err) {

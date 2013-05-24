@@ -3,7 +3,8 @@ var uuid = require('node-uuid');
 
 var Client = new mongoose.Schema({
     type: { type: String, required: true },
-    token: { type: String }
+    token: { type: String, unique: true },
+    info: {}
 });
 
 Client.pre('save', function (next) {

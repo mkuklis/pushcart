@@ -3,7 +3,7 @@ var uuid = require('node-uuid');
 
 var Application = new mongoose.Schema({
     name: { type: String, required: true },
-    token: { type: String }
+    token: { type: String, unique: true }
 });
 
 Application.pre('save', function (next) {

@@ -9,7 +9,7 @@ describe('Clients', function () {
             var req = request(app)
                 .post('/clients')
                 .set('X-Auth-Token', 'secret')
-                .send({ type: 'foo' })
+                .send({ type: 'foo', info: { foo: 'bar' }})
                 .expect(201)
                 .expect('Content-Type', /json/);
 
@@ -18,6 +18,7 @@ describe('Clients', function () {
 
                 assert.ok(res.body._id);
                 assert.equal(res.body.type, 'foo');
+                assert.deepEqual(res.body.info, { foo: 'bar' });
                 assert.ok(res.body.token);
 
                 done();
