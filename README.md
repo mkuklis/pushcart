@@ -3,10 +3,15 @@ pushcart
 
 Pushcart is a small HTTP-service for distributing messages from one or more producer applications to various client consumers.
 
-# Getting Started
+# Install
 
-    npm install -g pushcart
-    pushcart start
+In addition to installing MongoDB and Redis, install Pushcart from NPM:
+
+    $ npm install -g pushcart
+
+# Server
+
+    $ pushcart start
 
 The Pushcart server is configured via a number of environment variables:
 
@@ -14,3 +19,79 @@ The Pushcart server is configured via a number of environment variables:
 * `MONGODB_URL`
 * `REDIS_URL`
 * `AUTH_TOKEN`
+
+# Applications
+
+Message producers are referred to as "applications" and must be registered with Pushcart:
+
+    $ pushcart addapp
+    Name: My App
+    id: 519f9471fb85da32f7000001
+    token: eac3538e-07d3-485f-82a5-6e0e78866cc8
+
+Applications can then create messages by POST-ing to `/messages`
+
+    POST /messages HTTP/1.1
+    Host: mypushcartserver.com
+    Content-Type: application/json
+    X-App-Token: eac3538e-07d3-485f-82a5-6e0e78866cc8
+
+    { "hello": "world" }
+
+# Clients
+
+Message consumers are referred to as "clients" and must also be registered with Pushcart.  The client program can register itself by POST-ing to `/clients`:
+
+    POST /clients HTTP/1.1
+    Host: mypushcartserver.com
+    Content-Type: application/json
+    X-Auth-Token: secret
+
+    { "type": "test" }
+
+Example response:
+
+    {
+        "_id": "...",
+        "type": "test",
+        "token": "13c5287d-4801-41ec-98d6-8ef986e3adfe"
+    }
+
+# Messages
+
+Messages can be consumed by GET-ing `/messages`:
+
+    GET /messages HTTP/1.1
+    Host: mypushcartserver.com
+    X-Client-Token: 13c5287d-4801-41ec-98d6-8ef986e3adfe
+
+Example response:
+
+    [
+        {
+            "_id": "519f713c22744d85d8000001",
+            "hello": "world",
+            "app": {
+                "_id": "519f6c5cfb650fdbc6000001",
+                "name": "My App"
+            }
+        },
+        ...
+    ]
+
+Clients can also fetch messages created since a particular `_id` by specifying a `since` id in the query string:
+
+    GET /messages?since=519f713c22744d85d8000001 HTTP/1.1
+    Host: mypushcartserver.com
+    X-Client-Token: 13c5287d-4801-41ec-98d6-8ef986e3adfe
+
+# Pubsub
+
+Messages are also published to Redis when created.  Other applications can listen for these messages by subscribing to the `pushcart` channel:
+
+    $ redis-cli
+    $ subscribe pushcart
+
+# Test
+
+    $ npm test
