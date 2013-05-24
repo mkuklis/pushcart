@@ -1,0 +1,126 @@
+#!/usr/bin/env node
+
+var async = require('async');
+var program = require('commander');
+var fs = require('fs');
+var ini = require('ini');
+var path = require('path');
+var request = require('request');
+var f = require('util').format;
+var pkg = require('../package');
+
+var rcpath = path.join(process.env.HOME, '.pushcartrc');
+var config = {};
+
+try {
+    config = ini.parse(fs.readFileSync(rcpath, 'utf-8'));
+} catch (err) {}
+
+// Login
+// ---------------
+
+var login = program.command('login');
+login.description('login to a Pushcart server');
+login.action(function () {
+    async.series({
+        url: prompt('URL: '),
+        token: prompt('Auth token: ')
+    }, function (err, results) {
+        if (err) throw err;
+
+        fs.writeFileSync(rcpath, ini.stringify(results));
+        process.exit(0);
+    });
+});
+
+// Add App
+// ---------------
+
+var addapp = program.command('addapp');
+addapp.description('create a new application');
+addapp.action(function () {
+    program.prompt('Name: ', function (name) {
+        api('POST', '/applications', { name: name }, function (err, app) {
+            if (err) throw err;
+
+            console.log(f('id: %s\ntoken: %s', app._id, app.token))
+            process.exit(0);
+        });
+    });
+});
+
+// Remove App
+// ---------------
+
+var rmapp = program.command('rmapp <id>');
+rmapp.description('remove application with the given id');
+rmapp.action(function (id) {
+    api('DELETE', '/applications/' + id, {}, function (err) {
+        if (err) throw err;
+
+        console.log('OK');
+        process.exit(0);
+    });
+});
+
+// List Apps
+// ---------------
+
+var apps = program.command('apps');
+apps.description('list all applications');
+apps.action(function () {
+    api('GET', '/applications', undefined, function (err, apps) {
+        if (err) throw err;
+
+        apps.forEach(function (app) {
+            console.log(f('%s\n\tid: %s\n\ttoken: %s', app.name, app._id, app.token))
+        });
+
+        process.exit(0);
+    });
+});
+
+// Main
+// ---------------
+
+program.version(pkg.version);
+program.parse(process.argv);
+if (program.rawArgs.length === 2) program.help();
+
+// Helpers
+// ---------------
+
+function prompt(label) {
+    return function (callback) {
+        program.prompt(label, function (value) {
+            callback(null, value);
+        });
+    };
+}
+
+function api(method, path, body, callback) {
+    if (config.token === undefined) {
+        console.log('Error: missing token (please run "pushcart login" first)');
+        process.exit(1);
+    }
+
+    var url = config.url;
+    if (url[url.length - 1] === '/') url = url.slice(0, -1);
+    url += path
+
+    request({
+        url: url,
+        method: method,
+        body: body,
+        json: true,
+        headers: { 'X-Auth-Token': config.token }
+    }, function (err, res, body) {
+        if (err) throw err;
+        if (res.statusCode >= 400) {
+            console.log('Error:', body.error);
+            process.exit(1);
+        }
+
+        callback(null, body);
+    });
+}
