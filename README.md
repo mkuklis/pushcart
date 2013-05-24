@@ -11,7 +11,7 @@ In addition to installing MongoDB and Redis, install Pushcart from NPM:
 
 # Server
 
-    $ pushcart start
+    $ pushcart server
 
 The Pushcart server is configured via a number of environment variables:
 
