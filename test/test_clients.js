@@ -1,12 +1,11 @@
 var assert = require('assert');
 var request = require('supertest');
-var app = require('../app');
-var Client = require('../app/models/client');
+var pushcart = require('../lib');
 
 describe('Clients', function () {
     describe('POST /clients', function () {
         it('creates new client', function (done) {
-            var req = request(app)
+            var req = request(pushcart.app)
                 .post('/clients')
                 .set('X-Auth-Token', 'secret')
                 .send({ type: 'foo', info: { foo: 'bar' }})
@@ -29,15 +28,15 @@ describe('Clients', function () {
     describe('GET /clients', function () {
         beforeEach(function (done) {
             this.clients = [
-                new Client({ type: 'foo' }),
-                new Client({ type: 'bar' })
+                new pushcart.models.Client({ type: 'foo' }),
+                new pushcart.models.Client({ type: 'bar' })
             ];
 
-            Client.create(this.clients, done);
+            pushcart.models.Client.create(this.clients, done);
         });
 
         it('returns all clients', function (done) {
-            var req = request(app)
+            var req = request(pushcart.app)
                 .get('/clients')
                 .set('X-Auth-Token', 'secret')
                 .expect(200)
@@ -54,7 +53,7 @@ describe('Clients', function () {
         it('returns clients of a given type', function (done) {
             var self = this;
 
-            var req = request(app)
+            var req = request(pushcart.app)
                 .get('/clients?type=bar')
                 .set('X-Auth-Token', 'secret')
                 .expect(200)
@@ -72,12 +71,12 @@ describe('Clients', function () {
 
     describe('DELETE /clients/:id', function () {
         beforeEach(function (done) {
-            this.client = new Client({ type: 'foo' });
+            this.client = new pushcart.models.Client({ type: 'foo' });
             this.client.save(done);
         });
 
         it('deletes client with given id', function (done) {
-            var req = request(app)
+            var req = request(pushcart.app)
                 .del('/clients/' + this.client._id)
                 .set('X-Auth-Token', 'secret')
                 .expect(204);

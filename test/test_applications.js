@@ -1,12 +1,11 @@
 var assert = require('assert');
 var request = require('supertest');
-var app = require('../app');
-var Application = require('../app/models/application');
+var pushcart = require('../lib');
 
 describe('Applications', function () {
     describe('POST /applications', function () {
         it('creates new application', function (done) {
-            var req = request(app)
+            var req = request(pushcart.app)
                 .post('/applications')
                 .set('X-Auth-Token', 'secret')
                 .send({ name: 'Foo' })
@@ -27,11 +26,11 @@ describe('Applications', function () {
 
     describe('GET /applications', function () {
         beforeEach(function (done) {
-            Application.create([{ name: 'Foo' }, { name: 'Bar' }], done);
+            pushcart.models.Application.create([{ name: 'Foo' }, { name: 'Bar' }], done);
         });
 
         it('returns all applications', function (done) {
-            var req = request(app)
+            var req = request(pushcart.app)
                 .get('/applications')
                 .set('X-Auth-Token', 'secret')
                 .expect(200)
@@ -49,12 +48,12 @@ describe('Applications', function () {
 
     describe('DELETE /applications/:id', function () {
         beforeEach(function (done) {
-            this.app = new Application({ name: 'Foo' });
+            this.app = new pushcart.models.Application({ name: 'Foo' });
             this.app.save(done);
         });
 
         it('deletes application with given id', function (done) {
-            var req = request(app)
+            var req = request(pushcart.app)
                 .del('/applications/' + this.app._id)
                 .set('X-Auth-Token', 'secret')
                 .expect(204);

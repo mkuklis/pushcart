@@ -1,9 +1,6 @@
 var mongoose = require('mongoose');
 var request = require('supertest');
-var app = require('../app');
-var Application = require('../app/models/application');
-var Client = require('../app/models/client');
-var Message = require('../app/models/message');
+var pushcart = require('../lib');
 
 process.env.AUTH_TOKEN = 'secret';
 
@@ -12,13 +9,13 @@ before(function () {
 });
 
 beforeEach(function (done) {
-    Application.remove(done);
+    pushcart.models.Application.remove(done);
 });
 
 beforeEach(function (done) {
-    Client.remove(done);
+    pushcart.models.Client.remove(done);
 });
 
 beforeEach(function (done) {
-    Message.remove(done);
+    pushcart.models.Message.remove(done);
 });

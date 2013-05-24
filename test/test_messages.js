@@ -2,16 +2,12 @@ var assert = require('assert');
 var sinon = require('sinon');
 var request = require('supertest');
 var format = require('util').format;
-var app = require('../app');
-var events = require('../app/lib/events');
-var Application = require('../app/models/application');
-var Client = require('../app/models/client');
-var Message = require('../app/models/message');
+var pushcart = require('../lib');
 
 describe('Messages', function () {
     beforeEach(function (done) {
-        this.publish = sinon.stub(events, 'publish');
-        this.app = new Application({ name: 'Foo' });
+        this.publish = sinon.stub(pushcart.events, 'publish');
+        this.app = new pushcart.models.Application({ name: 'Foo' });
         this.app.save(done);
     });
 
@@ -21,7 +17,7 @@ describe('Messages', function () {
 
     describe('POST /messages', function () {
         it('creates new message', function (done) {
-            var req = request(app)
+            var req = request(pushcart.app)
                 .post('/messages')
                 .set('X-App-Token', this.app.token)
                 .expect(201)
@@ -40,7 +36,7 @@ describe('Messages', function () {
         it('publishes message event', function (done) {
             var self = this;
 
-            var req = request(app)
+            var req = request(pushcart.app)
                 .post('/messages')
                 .set('X-App-Token', this.app.token)
                 .expect('Content-Type', /json/);
@@ -56,21 +52,21 @@ describe('Messages', function () {
 
     describe('GET /messages', function () {
         beforeEach(function (done) {
-            this.client = new Client({ type: 'foo' });
+            this.client = new pushcart.models.Client({ type: 'foo' });
             this.client.save(done);
         });
 
         beforeEach(function (done) {
             this.messages = [
-                new Message({ app: this.app }),
-                new Message({ app: this.app })
+                new pushcart.models.Message({ app: this.app }),
+                new pushcart.models.Message({ app: this.app })
             ];
 
-            Message.create(this.messages, done);
+            pushcart.models.Message.create(this.messages, done);
         });
 
         it('returns all messages', function (done) {
-            var req = request(app)
+            var req = request(pushcart.app)
                 .get('/messages')
                 .set('X-Client-Token', this.client.token)
                 .expect(200)
@@ -87,7 +83,7 @@ describe('Messages', function () {
         it('returns messages created since a given id', function (done) {
             var self = this;
 
-            var req = request(app)
+            var req = request(pushcart.app)
                 .get('/messages?since=' + this.messages[0]._id)
                 .set('X-Client-Token', this.client.token)
                 .expect(200)

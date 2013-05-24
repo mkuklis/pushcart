@@ -1,7 +1,7 @@
 {
     "name": "pushcart",
     "version": "0.0.0",
-    "main": "./app/index.js",
+    "main": "./lib/index.js",
 
     "bin": {
         "pushcart": "./bin/pushcart"

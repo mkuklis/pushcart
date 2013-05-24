@@ -9,8 +9,7 @@ var path = require('path');
 var request = require('request');
 var f = require('util').format;
 var pkg = require('../package');
-var events = require('../app/lib/events');
-var app = require('../app');
+var pushcart = require('../lib');
 
 var rcpath = path.join(process.env.HOME, '.pushcartrc');
 var config = {};
@@ -26,8 +25,8 @@ var server = program.command('server');
 server.description('start a pushcart server');
 server.action(function () {
     mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/pushcart');
-    events.connect(process.env.REDIS_URI || 'redis://localhost:6379');
-    app.listen(process.env.PORT || 3000);
+    pushcart.events.connect(process.env.REDIS_URI || 'redis://localhost:6379');
+    pushcart.app.listen(process.env.PORT || 3000);
 });
 
 // Login
