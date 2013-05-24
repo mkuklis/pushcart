@@ -93,6 +93,35 @@ apps.action(function () {
     });
 });
 
+// Add Client
+// ---------------
+
+var addclient = program.command('addclient');
+addclient.description('create a new client');
+addclient.action(function () {
+    async.series({
+        type: prompt('Type: '),
+        info: prompt('Info: ')
+    }, function (err, results) {
+        if (err) throw err;
+
+        try {
+            var info = {};
+            if (results.info) info = JSON.parse(results.info);
+        } catch (err) {
+            console.log('Error: invalid info');
+            process.exit(1);
+        }
+
+        api('POST', '/clients', { type: results.type, info: info }, function (err, client) {
+            if (err) throw err;
+
+            console.log(f('\nOK\nid: %s\ntoken: %s', client._id, client.token))
+            process.exit(0);
+        });
+    });
+});
+
 // Remove Client
 // ---------------
 

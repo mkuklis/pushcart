@@ -28,14 +28,14 @@ Message producers are referred to as "applications" and must be registered with 
 
     OK
     id: 519f9471fb85da32f7000001
-    token: eac3538e-07d3-485f-82a5-6e0e78866cc8
+    token: eac3538e07d3485f82a56e0e78866cc8
 
 Applications can then create messages by POST-ing to `/messages` and providing the app token:
 
     POST /messages HTTP/1.1
     Host: mypushcartserver.com
     Content-Type: application/json
-    X-App-Token: eac3538e-07d3-485f-82a5-6e0e78866cc8
+    X-App-Token: eac3538e07d3485f82a56e0e78866cc8
 
     { "hello": "world" }
 
@@ -53,12 +53,22 @@ Message consumers are referred to as "clients" and must also be registered with 
 Example response:
 
     {
-        "_id": "...",
+        "_id": "519fab6f973a1d0000000001",
         "type": "test",
-        "token": "13c5287d-4801-41ec-98d6-8ef986e3adfe"
+        "token": "13c5287d480141ec98d68ef986e3adfe"
     }
 
 Clients should store the client token in order to consume messages.
+
+Clients can also be created using the `pushcart` command:
+
+    $ pushcart addclient
+    Type: test
+    Info: {"extra":"info"}
+
+    OK
+    id: 519fab6f973a1d0000000001
+    token: 13c5287d480141ec98d68ef986e3adfe
 
 ## Messages
 
@@ -66,7 +76,7 @@ Messages can be consumed in bulk by GET-ing `/messages`:
 
     GET /messages HTTP/1.1
     Host: mypushcartserver.com
-    X-Client-Token: 13c5287d-4801-41ec-98d6-8ef986e3adfe
+    X-Client-Token: 13c5287d480141ec98d68ef986e3adfe
 
 Example response:
 
@@ -86,7 +96,7 @@ Clients can also fetch only those messages created after a particular `_id` by s
 
     GET /messages?since=519f713c22744d85d8000001 HTTP/1.1
     Host: mypushcartserver.com
-    X-Client-Token: 13c5287d-4801-41ec-98d6-8ef986e3adfe
+    X-Client-Token: 13c5287d480141ec98d68ef986e3adfe
 
 ## Pubsub
 
