@@ -86,6 +86,9 @@ describe('Messages', function () {
                 assert.equal(res.body.length, 2);
                 assert.ok(res.body[0].app._id);
                 assert.ok(res.body[0].app.name);
+                assert.ok(res.body[0].timestamp);
+                assert.ok(res.body[0].timestamp >= res.body[1].timestamp);
+
                 done();
             });
         });
