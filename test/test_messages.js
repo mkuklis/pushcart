@@ -110,5 +110,26 @@ describe('Messages', function () {
                 done();
             });
         });
+
+        it('marks last read message for client', function (done) {
+            var self = this;
+
+            var req = request(pushcart.app)
+                .get('/messages')
+                .set('X-Client-Token', this.client.token)
+                .expect(200)
+                .expect('Content-Type', /json/);
+
+            req.end(function (err, res) {
+                if (err) return done(err);
+
+                pushcart.models.Client.findById(self.client._id, function (err, client) {
+                    if (err) return done(err);
+
+                    assert.equal(client.last.toString(), self.messages[0]._id.toString());
+                    done();
+                });
+            });
+        });
     });
 });
