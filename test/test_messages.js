@@ -65,12 +65,13 @@ describe('Messages', function () {
         });
 
         beforeEach(function (done) {
-            this.messages = [
-                new pushcart.models.Message({ app: this.app }),
-                new pushcart.models.Message({ app: this.app })
-            ];
+            this.messageA = new pushcart.models.Message({ app: this.app });
+            this.messageA.save(done);
+        });
 
-            pushcart.models.Message.create(this.messages, done);
+        beforeEach(function (done) {
+            this.messageB = new pushcart.models.Message({ app: this.app });
+            this.messageB.save(done);
         });
 
         it('returns all messages', function (done) {
@@ -97,7 +98,7 @@ describe('Messages', function () {
             var self = this;
 
             var req = request(pushcart.app)
-                .get('/messages?since=' + this.messages[0]._id)
+                .get('/messages?since=' + this.messageA._id)
                 .set('X-Client-Token', this.client.token)
                 .expect(200)
                 .expect('Content-Type', /json/);
@@ -106,7 +107,7 @@ describe('Messages', function () {
                 if (err) return done(err);
 
                 assert.equal(res.body.length, 1);
-                assert.equal(res.body[0]._id, self.messages[1]._id);
+                assert.equal(res.body[0]._id, self.messageB._id);
                 done();
             });
         });
@@ -126,7 +127,7 @@ describe('Messages', function () {
                 pushcart.models.Client.findById(self.client._id, function (err, client) {
                     if (err) return done(err);
 
-                    assert.equal(client.last.toString(), self.messages[0]._id.toString());
+                    assert.equal(client.last.toString(), self.messageB._id.toString());
                     done();
                 });
             });

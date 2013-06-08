@@ -27,12 +27,13 @@ describe('Clients', function () {
 
     describe('GET /clients', function () {
         beforeEach(function (done) {
-            this.clients = [
-                new pushcart.models.Client({ type: 'foo' }),
-                new pushcart.models.Client({ type: 'bar' })
-            ];
+            this.clientA = new pushcart.models.Client({ type: 'foo' });
+            this.clientA.save(done);
+        });
 
-            pushcart.models.Client.create(this.clients, done);
+        beforeEach(function (done) {
+            this.clientB = new pushcart.models.Client({ type: 'bar' });
+            this.clientB.save(done);
         });
 
         it('returns all clients', function (done) {
@@ -63,8 +64,48 @@ describe('Clients', function () {
                 if (err) return done(err);
 
                 assert.equal(res.body.length, 1);
-                assert.equal(res.body[0]._id, self.clients[1]._id);
+                assert.equal(res.body[0]._id, self.clientB._id);
                 done();
+            });
+        });
+
+        describe('with messages', function () {
+            beforeEach(function (done) {
+                this.app = new pushcart.models.Application({ name: 'Foo' });
+                this.app.save(done);
+            });
+
+            beforeEach(function (done) {
+                this.messageA = new pushcart.models.Message({ app: this.app });
+                this.messageA.save(done);
+            });
+
+            beforeEach(function (done) {
+                this.messageB = new pushcart.models.Message({ app: this.app });
+                this.messageB.save(done);
+            });
+
+            beforeEach(function (done) {
+                this.clientA.last = this.messageA;
+                this.clientA.save(done);
+            });
+
+            it('returns unread message count', function (done) {
+                var self = this;
+
+                var req = request(pushcart.app)
+                    .get('/clients')
+                    .set('X-Auth-Token', 'secret')
+                    .expect(200)
+                    .expect('Content-Type', /json/);
+
+                req.end(function (err, res) {
+                    if (err) return done(err);
+
+                    assert.equal(res.body[0].unread, 1);
+                    assert.equal(res.body[1].unread, 2);
+                    done();
+                });
             });
         });
     });
